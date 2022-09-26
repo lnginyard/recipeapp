@@ -11,4 +11,4 @@ whitenoise==6.2.0
 django-environ==0.9.0
 django-allauth==0.51.0
 django-sslserver
-djangorestframework==3.13.1
+djangorestframework==3.14.0
