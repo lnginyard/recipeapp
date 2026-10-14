@@ -3,7 +3,9 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-bind = '0.0.0.0:5005'
+import os
+
+bind = f"0.0.0.0:{os.getenv('PORT', '8000')}"
 workers = 1
 accesslog = '-'
 loglevel = 'debug'

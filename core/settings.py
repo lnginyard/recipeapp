@@ -7,7 +7,7 @@ import os, environ
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, True)
+    DEBUG=(bool, False)
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,10 +26,37 @@ DEBUG = env('DEBUG')
 # Assets Management
 ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets') 
 
-# load production server from .env
-ALLOWED_HOSTS = ['.onrender.com', 'local host' '127.0.0.1']
-# ALLOWED_HOSTS = ['localhost', 'localhost:85', '127.0.0.1', env('SERVER', default='127.0.0.1') ]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:85', 'http://127.0.0.1', 'https://' + env('SERVER', default='127.0.0.1') ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+server_host = env('SERVER', default=None)
+if server_host:
+    ALLOWED_HOSTS.append(server_host)
+
+render_external_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+if render_external_hostname:
+    ALLOWED_HOSTS.append(render_external_hostname)
+
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost:85',
+    'http://127.0.0.1:85',
+]
+
+if server_host:
+    if server_host.startswith(('http://', 'https://')):
+        CSRF_TRUSTED_ORIGINS.append(server_host.rstrip('/'))
+    else:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{server_host}')
+
+if render_external_hostname:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{render_external_hostname}')
+
+CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(CSRF_TRUSTED_ORIGINS))
 
 # Application definition
 
@@ -144,7 +171,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_ROOT = os.path.join(CORE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 

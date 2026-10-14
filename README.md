@@ -68,6 +68,22 @@ The meaning of each variable can be found below:
 
 <br />
 
+## ✨ Deploy on Render
+
+For Render web services, configure:
+
+- `SECRET_KEY` with a strong secret value
+- `DEBUG=False` for production
+- `RENDER_EXTERNAL_HOSTNAME` (provided by Render)
+
+Start command:
+
+```bash
+gunicorn --config gunicorn-cfg.py core.wsgi
+```
+
+<br />
+
 ## ✨ How to use it
 
 > Download the code 
